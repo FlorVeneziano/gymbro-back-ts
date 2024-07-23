@@ -30,3 +30,6 @@ steps:
         gcloud run deploy gymbro-back-ts --image gcr.io/$PROJECT_ID/gymbro-back-ts --platform managed --region $REGION --set-env-vars PORT=8080
 
 timeout: "1600s"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
