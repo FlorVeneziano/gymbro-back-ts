@@ -1,31 +1,34 @@
 steps:
-  - name: "node"
+  - name: "node:18"
     entrypoint: "npm"
     args: ["install"]
 
-  - name: "node"
+  - name: "node:18"
     entrypoint: "npm"
     args: ["run", "build"]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/gymbro-back-ts", "."]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/gymbro-back-ts"]
 
   - name: "gcr.io/cloud-builders/gcloud"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        set -e  # Fail the script if any command fails
         gcloud secrets versions access latest --secret="DB_NAME" > /workspace/DB_NAME &&
-        echo "DB_NAME=$(cat /workspace/DB_NAME)" >> .env &&
         gcloud secrets versions access latest --secret="DB_USER" > /workspace/DB_USER &&
-        echo "DB_USER=$(cat /workspace/DB_USER)" >> .env &&
         gcloud secrets versions access latest --secret="DB_PASSWORD" > /workspace/DB_PASSWORD &&
-        echo "DB_PASSWORD=$(cat /workspace/DB_PASSWORD)" >> .env &&
         gcloud secrets versions access latest --secret="DB_HOST" > /workspace/DB_HOST &&
-        echo "DB_HOST=$(cat /workspace/DB_HOST)" >> .env &&
-        gcloud secrets versions access latest --secret="DB_DIALECT" > /workspace/DB_DIALECT &&
-        echo "DB_DIALECT=$(cat /workspace/DB_DIALECT)" >> .env &&
-        gcloud secrets versions access latest --secret="SECRET_KEY" > /workspace/SECRET_KEY &&
-        echo "SECRET_KEY=$(cat /workspace/SECRET_KEY)" >> .env &&
-        gcloud run deploy
+        gcloud secrets versions access latest --secret="DB_PORT" > /workspace/DB_PORT &&
+        gcloud run deploy gymbro-back-ts --image gcr.io/$PROJECT_ID/gymbro-back-ts --platform managed --region southamerica-east1 \
+          --set-env-vars DB_NAME=$(cat /workspace/DB_NAME) \
+          --set-env-vars DB_USER=$(cat /workspace/DB_USER) \
+          --set-env-vars DB_PASSWORD=$(cat /workspace/DB_PASSWORD) \
+          --set-env-vars DB_HOST=$(cat /workspace/DB_HOST) \
+          --set-env-vars DB_PORT=$(cat /workspace/DB_PORT)
 
 timeout: "1600s"
 
