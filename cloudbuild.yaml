@@ -2,11 +2,11 @@ steps:
   - name: "gcr.io/cloud-builders/npm"
     args: ["install", "-g", "pnpm"]
 
-  - name: "node"
+  - name: "gcr.io/cloud-builders/npm"
     entrypoint: "pnpm"
     args: ["install"]
 
-  - name: "node"
+  - name: "gcr.io/cloud-builders/npm"
     entrypoint: "pnpm"
     args: ["run", "build"]
 
