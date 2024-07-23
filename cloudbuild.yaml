@@ -29,13 +29,11 @@ steps:
         gcloud secrets versions access latest --secret="DB_USER" > /workspace/DB_USER &&
         gcloud secrets versions access latest --secret="DB_PASSWORD" > /workspace/DB_PASSWORD &&
         gcloud secrets versions access latest --secret="DB_HOST" > /workspace/DB_HOST &&
-        gcloud secrets versions access latest --secret="DB_PORT" > /workspace/DB_PORT &&
         gcloud run deploy gymbro-back-ts --image gcr.io/$PROJECT_ID/gymbro-back-ts --platform managed --region southamerica-east1 \
           --set-env-vars DB_NAME=$(cat /workspace/DB_NAME) \
           --set-env-vars DB_USER=$(cat /workspace/DB_USER) \
           --set-env-vars DB_PASSWORD=$(cat /workspace/DB_PASSWORD) \
-          --set-env-vars DB_HOST=$(cat /workspace/DB_HOST) \
-          --set-env-vars DB_PORT=$(cat /workspace/DB_PORT)
+          --set-env-vars DB_HOST=$(cat /workspace/DB_HOST)
 
 timeout: "1600s"
 
