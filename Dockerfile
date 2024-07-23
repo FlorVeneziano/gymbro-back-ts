@@ -4,21 +4,20 @@ FROM node:18
 # Crea un directorio de trabajo
 WORKDIR /app
 
-# Copia el package.json y el pnpm-lock.yaml al contenedor
+# Copia el package.json y el package-lock.json al contenedor
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
 
-# Instala pnpm y las dependencias
-RUN npm install -g pnpm && pnpm install
+# Instala las dependencias
+RUN npm install
 
 # Copia el resto del código al contenedor
 COPY . .
 
 # Compila el proyecto
-RUN pnpm run build
+RUN npm run build
 
 # Expone el puerto en el que la aplicación escuchará
 EXPOSE 8080
 
 # Define el comando para ejecutar la aplicación
-CMD ["pnpm", "start"]
+CMD ["npm", "start"]
