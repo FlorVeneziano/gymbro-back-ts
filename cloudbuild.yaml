@@ -1,0 +1,26 @@
+steps:
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["install", "-g", "pnpm"]
+
+  - name: "node"
+    entrypoint: "pnpm"
+    args: ["install"]
+
+  - name: "node"
+    entrypoint: "pnpm"
+    args: ["run", "build"]
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        gcloud secrets versions access latest --secret="DB_NAME" > /workspace/DB_NAME &&
+        gcloud secrets versions access latest --secret="DB_USER" > /workspace/DB_USER &&
+        gcloud secrets versions access latest --secret="DB_PASSWORD" > /workspace/DB_PASSWORD &&
+        gcloud secrets versions access latest --secret="DB_HOST" > /workspace/DB_HOST &&
+        gcloud secrets versions access latest --secret="DB_DIALECT" > /workspace/DB_DIALECT &&
+        gcloud secrets versions access latest --secret="SECRET_KEY" > /workspace/SECRET_KEY &&
+        gcloud app deploy
+
+timeout: "1600s"
