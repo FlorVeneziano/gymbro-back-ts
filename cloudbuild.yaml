@@ -25,7 +25,7 @@ steps:
         echo "DB_DIALECT=$(cat /workspace/DB_DIALECT)" >> .env &&
         gcloud secrets versions access latest --secret="SECRET_KEY" > /workspace/SECRET_KEY &&
         echo "SECRET_KEY=$(cat /workspace/SECRET_KEY)" >> .env &&
-        gcloud run deploy gymbro-back-ts --image gcr.io/$PROJECT_ID/gymbro-back-ts --platform managed --region southamerica-east1
+        gcloud run deploy
 
 timeout: "1600s"
 
